@@ -2,6 +2,8 @@ import random
 import numpy as np
 import requests
 import json
+import config
+
 
 # List of drinks and names
 drinks = ["Double Xp", "Triple Xp", "half a pint of sours is -20", "Use of funnel/snorkel encouraged", 
@@ -25,7 +27,7 @@ def select_two_random_names():
 
 # Function to send message to discord
 def send_discord_message(message_content):
-    webhook_url = 'https://discord.com/api/webhooks/1213979668433076305/ix1mkjE_nqOYPwQMv0DOKjzeOF9w3uiyXcINXbddO96iaBfWV_zih2Mf4L7DfS6zE1op'  # Replace with your Discord webhook URL
+    webhook_url = config.webhook_url
     data = {
         'content': message_content
     }
