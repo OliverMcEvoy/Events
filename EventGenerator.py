@@ -6,23 +6,26 @@ import config
 
 
 # List of drinks and names
-drinks = ["Double Xp", "Triple Xp", "half a pint of sours is -20", "Use of funnel/snorkel encouraged", 
-          "Each house member/attende must do a web This weekend, if not +30", "8 pints before 8 each missed is 2",
-          "no drinking with your hands", "Everyone present must immediatly do a shot/down drink","invite ben",
+drinks = ["Double Xp", "Triple Xp", "half a pint of sours is -30 If fail +10", "Use of funnel/snorkel encouraged", "quadrule - 8 if fail get nothing"
+          "Each house member/attende must do a web This weekend, if not +10", "8 pints before 8 on saturday each missed is +1",
+          "1 drink this weekend no hands", "Beer real +5","invite ben",
           "Drinking Buddy","International Drinking rules","+40 percentage shots only ","anything but a glass",
-          "People drinking with the same type of drink must drink together, e.g mugs are mates", "Tom does a shot", "Olly does a shot", "Jake does a shot", "Bence does a shot", "Oliver does a shot","first person and you drink"]
+          "People drinking with the same type of drink must drink together, e.g mugs are mates", "Tom does a shot",
+          "Olly does a shot", "Jake does a shot", "Bence does a shot", "Oliver does a shot","speak first person and you drink",
+          "Previous benders of the month must record an apology video last one to do so +10","Mates"]
 
 names = ["Jake", "Bence", "Oliver", "Tom","Olly"]  # Add your names here
 
 # Function to select random drinks
 def select_random_drinks():
-    num_drinks = np.random.choice([3, 4, 5, 6, 7], p=[0.5, 0.2, 0.15, 0.1, 0.05])  # Adjust probabilities as needed
+    num_drinks = np.random.choice([3, 4, 5, 9], p=[0.5, 0.33, 0.15, 0.02])  # Adjust probabilities as needed
     selected_drinks = random.sample(drinks, num_drinks)
+    selected_drinks += ["any design project chat is a shot"]
     return selected_drinks
 
 # Function to select two random names
-def select_two_random_names():
-    selected_names = random.sample(names, 2)
+def select_three_random_names():
+    selected_names = random.sample(names, 3)
     return selected_names
 
 # Function to send message to discord
@@ -61,16 +64,28 @@ def select_random_name():
 # Function to handle 'drinks time' command
 def handle_drinks_time():
     selected_drinks = select_random_drinks()
+    selected_names = []  # Define selected_names here
+    selected_names = select_three_random_names()
     message = "\n\nWhats happening this weekend???\n"
+    shots_before_8 = []
+    mates = []  # List to store the names of the mates
     for i, drink in enumerate(selected_drinks, 1):
         message += f"{i}. {drink}\n"
+        if "does a shot" in drink:
+            name = drink.split(" ")[0]
+            shots_before_8.append(name)
+        if drink == "Mates":
+            mates = random.sample(names, 2)  # Select two random names to be mates
     if "Double Xp" in selected_drinks and "Triple Xp" in selected_drinks:
         message += "\nNote: Double Xp and Triple Xp together means Quadrupled Xp!\n"
     if "Drinking Buddy" in selected_drinks:
-        selected_names = select_two_random_names()
-        message += f"\nSpecial Event: {selected_names[0]} is a drinking Buddy and {selected_names[1]} is the master!\n"
+        message += f"\nSpecial Event: {selected_names[0]} is a drinking Buddy and {selected_names[1]} and Ben is the master!\n"
+    if mates:
+        message += f"\nSpecial Event: {mates[0]} and {mates[1]} are mates!\n"
     speaker = select_random_name()
     message += f"\n{speaker} is on the speaker this weekend!\n"
+    if shots_before_8:
+        message += f"\nSummary: The following people need to do a shot before 8, extra shot for each hour late! : {selected_names[2]} and {', '.join(shots_before_8)}"
     print(message)
     send_discord_message(message)
 
